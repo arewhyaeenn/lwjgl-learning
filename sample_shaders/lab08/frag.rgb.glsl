@@ -55,9 +55,9 @@ vec3 directionalLightDiffuse(DirectionalLight light, float slDotN) {
     return slDotN * light.diffuse;
 }
 
-vec3 directionalLightSpecular(DirectionalLight light, vec3 sl, vec3 v) {
+vec3 directionalLightSpecular(DirectionalLight light, vec3 sl, float slDotN, vec3 v) {
     vec3 illumination = vec3(0);
-    vec3 rl = reflect(sl, fragNormal);
+    vec3 rl = 2.0 * slDotN * fragNormal - sl;
     float rlDotV = dot(rl, v);
     if (rlDotV > 0.0) {
         illumination = pow(rlDotV, material.shininess) * light.specular;
@@ -72,7 +72,7 @@ DiffuseSpecularDouble directional(DirectionalLight light, vec3 v) {
     float slDotN = dot(sl, fragNormal);
     if (slDotN > 0.0) {
         illumination.diffuse = directionalLightDiffuse(light, slDotN);
-        illumination.specular = directionalLightSpecular(light, sl, v);
+        illumination.specular = directionalLightSpecular(light, sl, slDotN, v);
     }
 
     return illumination;
@@ -82,10 +82,10 @@ vec3 pointLightDiffuse(PointLight light, float slDotN, float squaredDistance) {
     return (slDotN * light.diffuse) / squaredDistance;
 }
 
-vec3 pointLightSpecular(PointLight light, vec3 sl, vec3 v, float squaredDistance) {
+vec3 pointLightSpecular(PointLight light, vec3 sl, float slDotN, vec3 v, float squaredDistance) {
     vec3 illumination = vec3(0);
 
-    vec3 rl = reflect(sl, fragNormal);
+    vec3 rl = 2.0 * slDotN * fragNormal - sl;
     float rlDotV = dot(rl, v);
     if (rlDotV > 0.0) {
         illumination = (pow(rlDotV, material.shininess) * light.specular) / squaredDistance;
@@ -103,7 +103,7 @@ DiffuseSpecularDouble point(PointLight light, vec3 v) {
     float squaredDistance = max(dot(diff, diff), 1.0);
     if (slDotN > 0.0) {
         illumination.diffuse = pointLightDiffuse(light, slDotN, squaredDistance);
-        illumination.specular = pointLightSpecular(light, sl, v, squaredDistance);
+        illumination.specular = pointLightSpecular(light, sl, slDotN, v, squaredDistance);
     }
 
     return illumination;
