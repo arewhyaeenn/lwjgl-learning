@@ -100,7 +100,7 @@ public class Lab07 extends ApplicationAdapter {
         final float earthSpecular = 0.3f;
         final float earthAmbient = 0.0f;
         final float earthShininess = 10f;
-        this.earthTexture = new Texture("textures/lab07/earth-texture.png");
+        this.earthTexture = Texture.readImageFile("textures/lab07/earth-texture.png");
 
         final ScalarPhongMaterial earthMaterial = new ScalarPhongMaterial(
                 this.shaderPrograms.get("uvProgram"),

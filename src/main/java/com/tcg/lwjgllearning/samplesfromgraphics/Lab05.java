@@ -117,7 +117,7 @@ public class Lab05 extends ApplicationAdapter {
         this.yellowCube.translate(new Vector3(-5, 0, 0));
         this.purpleSphere.translate(new Vector3(0, 0, -5));
 
-        this.radioactiveCrateTexture = new Texture("textures/lab05/radioactive-crate.png");
+        this.radioactiveCrateTexture = Texture.readImageFile("textures/lab05/radioactive-crate.png");
         this.radioactiveCrate = new TexturedMesh(
                 this.shaders.get("uvProgram"),
                 Shapes3D.Box.positionArray(),
@@ -128,7 +128,7 @@ public class Lab05 extends ApplicationAdapter {
         );
         this.radioactiveCrate.translate(new Vector3(5, 0, 0));
 
-        this.unwrappedCubeTexture = new Texture("textures/lab05/unwrapped-cube.png");
+        this.unwrappedCubeTexture = Texture.readImageFile("textures/lab05/unwrapped-cube.png");
         this.testCube = new TexturedMesh(
                 this.shaders.get("uvProgram"),
                 Shapes3D.Box.positionArray(),

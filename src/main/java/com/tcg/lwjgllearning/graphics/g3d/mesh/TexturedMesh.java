@@ -24,7 +24,7 @@ public class TexturedMesh extends MaterialMesh {
     private final int texCoordVboId;
 
     public TexturedMesh(ScalarPhongMaterial material, float[] positionArray, float[] normalArray, int[] indexArray, float[] uvArray,
-                  Texture texture, Vector3 position, Quaternion rotation, Vector3 scale) {
+                        Texture texture, Vector3 position, Quaternion rotation, Vector3 scale) {
         super(material, positionArray, normalArray, indexArray, position, rotation, scale);
         this.uvArray = Arrays.copyOf(Objects.requireNonNull(uvArray), uvArray.length);
         this.texture = Objects.requireNonNull(texture);
@@ -35,7 +35,7 @@ public class TexturedMesh extends MaterialMesh {
     }
 
     public TexturedMesh(ShaderProgram shaderProgram, float[] positionArray, float[] normalArray, int[] indexArray,
-                  float[] uvArray, Texture texture, Vector3 position, Quaternion rotation, Vector3 scale) {
+                        float[] uvArray, Texture texture, Vector3 position, Quaternion rotation, Vector3 scale) {
         this(new ScalarPhongMaterial(shaderProgram), positionArray, normalArray,
                 indexArray, uvArray, texture, position, rotation, scale);
     }
@@ -82,14 +82,11 @@ public class TexturedMesh extends MaterialMesh {
     @Override
     public void activate() {
         super.activate();
-        glUniform1i(this.textureUniformLocation, 0);
-        glActiveTexture(GL_TEXTURE0);
-        this.texture.bind();
+        this.texture.activate(this.textureUniformLocation);
     }
 
     @Override
     public void deactivate() {
-        this.texture.unbind();
         super.deactivate();
     }
 

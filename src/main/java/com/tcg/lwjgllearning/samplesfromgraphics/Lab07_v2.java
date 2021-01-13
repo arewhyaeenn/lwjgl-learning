@@ -57,8 +57,8 @@ public class Lab07_v2 extends ApplicationAdapter {
         final Vector3 ambientLight = new Vector3(0.4f, 0.5f, 0.4f);
 
         final Vector3 pointLightPosition = Vector3.origin();
-        final Vector3 pointLightDiffuse = new Vector3(4f, 4f, 4f);
-        final Vector3 pointLightSpecular = new Vector3(2f, 2f, 2f);
+        final Vector3 pointLightDiffuse = new Vector3(1f, 1f, 4f);
+        final Vector3 pointLightSpecular = new Vector3(4f, 1f, 1f);
 
         this.lightManager = new LightManager(ambientLight);
         this.pointLight1 = this.lightManager.addPointLight(pointLightPosition, pointLightDiffuse, pointLightSpecular);
@@ -103,7 +103,7 @@ public class Lab07_v2 extends ApplicationAdapter {
         final float earthSpecular = 0.3f;
         final float earthAmbient = 0.0f;
         final float earthShininess = 10f;
-        this.earthTexture = new Texture("textures/lab07/earth-texture.png");
+        this.earthTexture = Texture.readImageFile("textures/lab07/earth-texture.png");
 
         final ScalarPhongMaterial earthMaterial = new ScalarPhongMaterial(
                 this.shaderPrograms.get("uvProgram"),

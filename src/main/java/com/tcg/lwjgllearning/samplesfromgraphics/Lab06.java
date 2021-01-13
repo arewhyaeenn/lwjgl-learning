@@ -52,17 +52,17 @@ public class Lab06 extends ApplicationAdapter {
 
         this.updateLightingAndMatrices(300, 300);
 
-        this.suzyTexture = new Texture("textures/lab06/suzy2-texture.png", true);
+        this.suzyTexture = Texture.readImageFile("textures/lab06/suzy2-texture.png", true);
         this.suzyMesh = OBJModel.textureOBJ("models/lab06/suzy2.obj",
                 this.shaders.get("uvProgram"), this.suzyTexture);
 
-        this.cubeTexture = new Texture("textures/lab06/cube-texture.png", true);
+        this.cubeTexture = Texture.readImageFile("textures/lab06/cube-texture.png", true);
         this.cubeMesh = OBJModel.textureOBJ("models/lab06/cube.obj", this.shaders.get("uvProgram"), this.cubeTexture);
 
-        this.r2Texture = new Texture("textures/lab06/r2d2-texture.png", true);
+        this.r2Texture = Texture.readImageFile("textures/lab06/r2d2-texture.png", true);
         this.r2Mesh = OBJModel.textureOBJ("models/lab06/r2unit.obj", this.shaders.get("uvProgram"), this.r2Texture);
 
-        this.stopSignTexture = new Texture("textures/lab06/stopSign-texture.png", true);
+        this.stopSignTexture = Texture.readImageFile("textures/lab06/stopSign-texture.png", true);
         this.stopSignMesh = OBJModel.textureOBJ("models/lab06/stopSign.obj",
                 this.shaders.get("uvProgram"), this.stopSignTexture);
 
