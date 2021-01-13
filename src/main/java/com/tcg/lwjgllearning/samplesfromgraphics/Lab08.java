@@ -8,6 +8,7 @@ import com.tcg.lwjgllearning.graphics.Color;
 import com.tcg.lwjgllearning.graphics.KeyboardFPSCamera;
 import com.tcg.lwjgllearning.graphics.ShaderProgram;
 import com.tcg.lwjgllearning.graphics.Texture;
+import com.tcg.lwjgllearning.graphics.g3d.lighting.DirectionalLight;
 import com.tcg.lwjgllearning.graphics.g3d.lighting.LightManager;
 import com.tcg.lwjgllearning.graphics.g3d.lighting.PointLight;
 import com.tcg.lwjgllearning.graphics.g3d.materials.ColorPhongMaterial;
@@ -36,6 +37,7 @@ public class Lab08 extends ApplicationAdapter {
     private PointLight pointLight1;
     private PointLight pointLight2;
     private Mesh emeraldSuzy;
+    private DirectionalLight directionalLight;
     private Texture earthTexture;
     private TexturedMesh uvEarth;
     private Mesh lightSuzy1;
@@ -66,11 +68,17 @@ public class Lab08 extends ApplicationAdapter {
 
         final Vector3 pointLightPosition = Vector3.origin();
         final Vector3 pointLightDiffuse = new Vector3(1f, 1f, 4f);
-        final Vector3 pointLightSpecular = new Vector3(1f, 4f, 1f);
+        final Vector3 pointLightSpecular = new Vector3(4f, 1f, 1f);
 
         this.lightManager = new LightManager(this.shaderPrograms.values(), ambientLight);
         this.pointLight1 = this.lightManager.addPointLight(pointLightPosition, pointLightDiffuse, pointLightSpecular);
         this.pointLight2 = this.lightManager.addPointLight(pointLightPosition, pointLightDiffuse, pointLightSpecular);
+
+//        final Vector3 dirLightDirection = new Vector3(2f, -2f, -1f);
+//        final Vector3 dirLightDiffuse = new Vector3(2f, 0f, 0f);
+//        final Vector3 dirLightSpecular = new Vector3(0f, 0f, 4f);
+//        this.directionalLight = this.lightManager.addDirectionalLight(
+//                dirLightDirection, dirLightDiffuse, dirLightSpecular);
         this.lightManager.update();
 
         final Color emeraldDiffuse = Color.rgb888(0x139C13);
@@ -92,8 +100,8 @@ public class Lab08 extends ApplicationAdapter {
         final float earthDiffuse = 0.7f;
         final float earthSpecular = 0.3f;
         final float earthAmbient = 0.0f;
-        final float earthShininess = 0.1f;
-        this.earthTexture = new Texture("textures/lab07/earth-texture.png");
+        final float earthShininess = 10f;
+        this.earthTexture = Texture.readImageFile("textures/lab07/earth-texture.png");
 
         final ScalarPhongMaterial earthMaterial = new ScalarPhongMaterial(
                 this.shaderPrograms.get("uvProgram"),

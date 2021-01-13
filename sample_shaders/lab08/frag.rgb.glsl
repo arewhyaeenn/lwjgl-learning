@@ -31,9 +31,9 @@ struct Camera
     mat4 mProjView;
 };
 
-struct DiffuseSpecularIlluminationDouble {
-    vec3 diffuseIllumination;
-    vec3 specularIllumination;
+struct DiffuseSpecularDouble {
+    vec3 diffuse;
+    vec3 specular;
 };
 
 // lights
@@ -51,59 +51,59 @@ uniform Camera cam;
 varying vec3 fragPosition;
 varying vec3 fragNormal;
 
-vec3 directionalLightDiffuseIllumination(DirectionalLight light, float slDotN) {
-    return material.diffuse * slDotN * light.diffuse;
+vec3 directionalLightDiffuse(DirectionalLight light, float slDotN) {
+    return slDotN * light.diffuse;
 }
 
-vec3 directionalLightSpecularIllumination(DirectionalLight light, vec3 sl, vec3 v) {
+vec3 directionalLightSpecular(DirectionalLight light, vec3 sl, vec3 v) {
     vec3 illumination = vec3(0);
     vec3 rl = reflect(sl, fragNormal);
     float rlDotV = dot(rl, v);
     if (rlDotV > 0.0) {
-        illumination = material.specular * pow(rlDotV, material.shininess) * light.specular;
+        illumination = pow(rlDotV, material.shininess) * light.specular;
     }
     return illumination;
 }
 
-DiffuseSpecularIlluminationDouble directionalIllumination(DirectionalLight light, vec3 v) {
-    DiffuseSpecularIlluminationDouble illumination = DiffuseSpecularIlluminationDouble(vec3(0), vec3(0));
+DiffuseSpecularDouble directional(DirectionalLight light, vec3 v) {
+    DiffuseSpecularDouble illumination = DiffuseSpecularDouble(vec3(0), vec3(0));
 
     vec3 sl = -light.direction;
     float slDotN = dot(sl, fragNormal);
     if (slDotN > 0.0) {
-        illumination.diffuseIllumination = directionalLightDiffuseIllumination(light, slDotN);
-        illumination.specularIllumination = directionalLightSpecularIllumination(light, sl, v);
+        illumination.diffuse = directionalLightDiffuse(light, slDotN);
+        illumination.specular = directionalLightSpecular(light, sl, v);
     }
 
     return illumination;
 }
 
-vec3 pointLightDiffuseIllumination(PointLight light, float slDotN, float squaredDistance) {
-    return material.diffuse * ((slDotN * light.diffuse) / squaredDistance);
+vec3 pointLightDiffuse(PointLight light, float slDotN, float squaredDistance) {
+    return (slDotN * light.diffuse) / squaredDistance;
 }
 
-vec3 pointLightSpecularIllumination(PointLight light, vec3 sl, vec3 v, float squaredDistance) {
+vec3 pointLightSpecular(PointLight light, vec3 sl, vec3 v, float squaredDistance) {
     vec3 illumination = vec3(0);
 
     vec3 rl = reflect(sl, fragNormal);
     float rlDotV = dot(rl, v);
     if (rlDotV > 0.0) {
-        illumination = material.specular * ((pow(rlDotV, material.shininess) * light.specular) / squaredDistance);
+        illumination = (pow(rlDotV, material.shininess) * light.specular) / squaredDistance;
     }
 
     return illumination;
 }
 
-DiffuseSpecularIlluminationDouble pointIllumination(PointLight light, vec3 v) {
-    DiffuseSpecularIlluminationDouble illumination = DiffuseSpecularIlluminationDouble(vec3(0), vec3(0));
+DiffuseSpecularDouble point(PointLight light, vec3 v) {
+    DiffuseSpecularDouble illumination = DiffuseSpecularDouble(vec3(0), vec3(0));
 
     vec3 sl = normalize(light.position - fragPosition);
     float slDotN = dot(sl, fragNormal);
     vec3 diff = fragPosition - light.position;
     float squaredDistance = max(dot(diff, diff), 1.0);
     if (slDotN > 0.0) {
-        illumination.diffuseIllumination = pointLightDiffuseIllumination(light, slDotN, squaredDistance);
-        illumination.specularIllumination = pointLightSpecularIllumination(light, sl, v, squaredDistance);
+        illumination.diffuse = pointLightDiffuse(light, slDotN, squaredDistance);
+        illumination.specular = pointLightSpecular(light, sl, v, squaredDistance);
     }
 
     return illumination;
@@ -111,7 +111,6 @@ DiffuseSpecularIlluminationDouble pointIllumination(PointLight light, vec3 v) {
 
 void main()
 {
-    // TODO calculate illumination (I in the cheatsheet)
     vec3 ambientLightSum = ambientLight;
 
     DirectionalLight directional_light;
@@ -119,30 +118,30 @@ void main()
 
     vec3 v = normalize(cam.position - fragPosition);
 
-    vec3 diffuseIllumination = vec3(0);
-    vec3 specularIllumination = vec3(0);
+    vec3 diffuseLightSum = vec3(0);
+    vec3 specularLightSum = vec3(0);
 
-    DiffuseSpecularIlluminationDouble directionalIlluminationPerLight;
-    DiffuseSpecularIlluminationDouble pointIlluminationPerLight;
+    DiffuseSpecularDouble directionalPerLight;
+    DiffuseSpecularDouble pointPerLight;
 
     for (int i = 0; i < 16; ++i) {
         directional_light = directionalLights[i];
         point_light = pointLights[i];
         ambientLightSum += directional_light.ambient + point_light.ambient;
 
-        directionalIlluminationPerLight = directionalIllumination(directional_light, v);
-        diffuseIllumination += directionalIlluminationPerLight.diffuseIllumination;
-        specularIllumination += directionalIlluminationPerLight.specularIllumination;
+        directionalPerLight = directional(directional_light, v);
+        diffuseLightSum += directionalPerLight.diffuse;
+        specularLightSum += directionalPerLight.specular;
 
-        pointIlluminationPerLight = pointIllumination(point_light, v);
-        diffuseIllumination += pointIlluminationPerLight.diffuseIllumination;
-        specularIllumination += pointIlluminationPerLight.specularIllumination;
+        pointPerLight = point(point_light, v);
+        diffuseLightSum += pointPerLight.diffuse;
+        specularLightSum += pointPerLight.specular;
 
     }
 
-    vec3 ambientIllumination = material.ambient * ambientLightSum;
-
-    vec3 illumination = ambientIllumination + diffuseIllumination + specularIllumination;
+    vec3 illumination = material.ambient * ambientLightSum +
+        material.diffuse * diffuseLightSum +
+        material.specular * specularLightSum;
 
     gl_FragColor = vec4(illumination, 1);
 }
