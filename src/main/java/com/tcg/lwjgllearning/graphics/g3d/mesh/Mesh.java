@@ -116,8 +116,8 @@ public class Mesh extends AbstractMesh {
         this.update();
         this.shaderProgram.bind();
         glBindVertexArray(this.vaoId);
-        glUniformMatrix4fv(this.mWorldUniformLocation, false, this.worldMatrix());
-        glUniformMatrix3fv(this.mNormalUniformLocation, false, this.normalMatrix());
+        glUniformMatrix4fv(this.mWorldUniformLocation, false, this.worldTransformArray());
+        glUniformMatrix3fv(this.mNormalUniformLocation, false, this.normalTransformArray());
     }
 
     public void draw() {
@@ -135,8 +135,9 @@ public class Mesh extends AbstractMesh {
         activateAttribute3f((AbstractAttribute) attribute, attributeLocation);
     }
 
-    public void bindIndexBuffer() {
+    public int bindIndexBuffer() {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.indexVboId);
+        return this.indexArray.length;
     }
 
     @Override

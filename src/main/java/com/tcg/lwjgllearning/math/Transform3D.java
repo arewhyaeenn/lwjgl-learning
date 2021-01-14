@@ -136,11 +136,15 @@ public class Transform3D {
         }
     }
 
-    public float[] worldMatrix() {
+    public Matrix4 worldTransform() {
+        return this.mWorld;
+    }
+
+    public float[] worldTransformArray() {
         return this.mWorld.asArray();
     }
 
-    public float[] normalMatrix() {
+    public float[] normalTransformArray() {
         return this.mNormal.asArray();
     }
 

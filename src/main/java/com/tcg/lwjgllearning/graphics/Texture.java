@@ -19,13 +19,13 @@ public class Texture implements Disposable {
 
     private final static ArrayMap<Texture> boundTextures = new ArrayMap<>();
 
-    private final static int DEFAULT_RESOLUTION = 1024;
+    protected final static int DEFAULT_RESOLUTION = 1024;
 
     public final int width;
     public final int height;
 
-    private final int textureId;
-    private final int glTextureUnitIndex;
+    protected final int textureId;
+    protected final int glTextureUnitIndex;
 
     public Texture(int width, int height, Format inputFormat, Format textureFormat, ByteBuffer buf) {
         this.textureId = glGenTextures();
